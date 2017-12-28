@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "dictabase"
+author = "Nick Denny"
+author-email = "nick@apimetrics.com"
+home-page = "https://github.com/ndenny/dictabase"
+classifiers = ["License :: OSI Approved :: Apache Software License"]
+
