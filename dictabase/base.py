@@ -2,7 +2,7 @@ from dictabase.property import DictaProperty
 from dictabase.query import DictaQuery
 
 
-class Dictabase(dict):
+class DictaBase(dict):
 
     def __getattr__(self, property_name):
         return DictaProperty(
