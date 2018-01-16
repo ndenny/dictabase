@@ -15,7 +15,7 @@ class View(dict):
         for datum in sorted_data:
             self[self.index(datum)] = datum
 
-    def query(self) -> 'Query':
+    def query(self, *args: Iterable['Statements']) -> 'Query':
         from .query import Query
         log.debug('View.query')
-        return Query(self)
+        return Query(self, list(args))
