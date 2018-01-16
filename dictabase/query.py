@@ -1,23 +1,31 @@
+import logging
+from typing import Optional, Iterable
+from . import View
+from . import Model
+from . import Statement
 
 
-class DictaQuery:
-    def __init__(self, parent, statements):
-        self.parent = parent
-        self.statements = statements
-        print('DictaQuery: {} statements'.format(len(self.statements)))
+log = logging.getLogger(__name__)  # pylint: disable=C0103
 
-    def filter(self, statement):
-        return DictaQuery(
-            self.parent,
-            self.statements + [statement])
 
-    def run(self):
-        from dictabase import DictaBase
-        answer = DictaBase()
+class Query:
 
-        for statement in self.statements:
-            if statement():
-                prop = statement.property_name
-                answer[prop] = statement.parent[prop]
+    def __init__(self, view: View, statements: Optional[Iterable[Statement]] = None):
+        log.debug('Query.__init__')
+        self.view = view
+        self.statements = statements or []
 
-        return answer
+    def filter(self, statement: Statement) -> 'Query':
+        log.debug('Query.filter')
+        return Query(self.view, self.statements + [statement])
+
+    def fetch(self) -> Iterable[Model]:
+        log.debug('Query.fetch')
+        results = {key: val for key, val in self.view.items()}
+
+        for key in self.view.keys():
+            for statement in self.statements:
+                if not statement(self.view.index, key):
+                    del results[key]
+
+        return results.values()

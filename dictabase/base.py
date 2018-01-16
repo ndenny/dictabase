@@ -1,20 +1,22 @@
-from dictabase.property import DictaProperty
-from dictabase.query import DictaQuery
+import logging
+from typing import Iterable
+from . import Index
+from . import Model
+from . import View
+
+log = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
-class DictaBase(dict):
+class DictaBase:
 
-    def __getattr__(self, property_name):
-        return DictaProperty(
-            parent=self,
-            property_name=property_name)
+    def __init__(self, data: Iterable[Model], indexes: Iterable[Index]):
+        self.data = data
+        index = Index(indexes)
+        self.view = View(index, data)
 
-    def query(self, statement=None):
-        statements = [statement] if statement else []
-        return DictaQuery(self, statements)
+    def __enter__(self) -> View:
+        log.debug("DictaBase.__enter__")
+        return self.view
 
-    def __enter__(self):
-        return DictaQuery(self, [])
-
-    def __exit__(self, *args, **kwargs):
-        pass
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        log.debug("DictaBase.__exit__ %s %s %s", exc_type, exc_val, exc_tb)
