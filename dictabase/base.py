@@ -10,7 +10,6 @@ log = logging.getLogger(__name__)  # pylint: disable=C0103
 class DictaBase:
 
     def __init__(self, data: Iterable[Model], indexes: Iterable[Index]):
-        self.data = data
         index = Index(indexes)
         self.view = View(index, data)
 

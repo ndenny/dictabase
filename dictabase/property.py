@@ -5,10 +5,11 @@ log = logging.getLogger(__name__)  # pylint: disable=C0103
 
 
 class Property:
-    def __init__(self, name: str = None, value: object = None):
+    def __init__(self, name: str = None, value: object = None, default: object = None):
         log.debug('Property.__init__ %s', name)
         self.name = name
         self.value = value
+        self.default = default
 
     def __eq__(self, value):
         return Statement(self.name, '__eq__', value)

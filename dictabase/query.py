@@ -21,11 +21,4 @@ class Query:
 
     def fetch(self) -> Iterable[Model]:
         log.debug('Query.fetch')
-        results = {key: val for key, val in self.view.items()}
-
-        for key in self.view.keys():
-            for statement in self.statements:
-                if not statement(self.view.index, key):
-                    del results[key]
-
-        return results.values()
+        return (val for key, val in self.view.items() if all(statement(self.view.indexer, key) for statement in self.statements))

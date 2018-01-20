@@ -8,17 +8,13 @@ class Model:
 
     def __init__(self, **kwargs):
         log.debug('Model.__init__ %s', kwargs)
-        for name, value in kwargs.items():
-            prop = getattr(self.__class__, name)
-            if not isinstance(prop, Property):
-                raise TypeError('Cannot set non-property %s' % name)
-            setattr(self, name, value)
 
         cls = self.__class__
         for name in set(dir(cls)):
             prop = getattr(cls, name, None)
             if isinstance(prop, Property):
                 prop.name = name
+                setattr(self, name, kwargs.get(name, prop.default))
 
     def __repr__(self):
         props = []
